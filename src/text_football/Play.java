@@ -36,9 +36,11 @@ public class Play {
         int playId = 0;
 
         if (type == 1) {
+            getruns();
             System.out.println("4.Inside, 5.Outside, 6.Draw, 7.Toss, 8.Goaline");
             playId = scan.nextInt();
         } else if (type == 2) {
+            playview();
             System.out.println("9.Screen, 10.Shallow, 11.Middle, 12.Deep, 13.Hail Mary");
             playId = (scan.nextInt());
         } else if (type == 3) {
@@ -72,15 +74,15 @@ public class Play {
             case 9: //("9.Screen, 10.Shallow, 11.Middle, 12.Deep, 13.Hail Mary");
                 if (defence <= 85) {
                     System.out.println("The pass is complete.");
-                    n = def.nextInt(5) + 1;
+                    n = def.nextInt(12) -3 ;
                 } else {
-                    n = checkdefence(-1);
+                    n = checkdefence(-1);//incomplete
                 }
                 break;
             case 10:
                 if (defence <= 65) {
                     System.out.println("The pass is complete.");
-                    n = def.nextInt(5) + 1;
+                    n = def.nextInt(6) + 1;  //1-7 yards
                 } else {
                     n = checkdefence(-1);
                 }
@@ -88,7 +90,7 @@ public class Play {
             case 11:
                 if (defence <= 40) {
                     System.out.println("The pass is complete.");
-                    n = def.nextInt(9) + 6;
+                    n = def.nextInt(11) + 5;
                 } else {
                     n = checkdefence(-1);
                 }
@@ -96,7 +98,7 @@ public class Play {
             case 12:
                 if (defence <= 30) {
                     System.out.println("The pass is complete.");
-                    n = def.nextInt(10) + 15;
+                    n = def.nextInt(15) + 10;
                 } else {
                     n = checkdefence(-1);
                 }
@@ -165,19 +167,6 @@ public class Play {
     public int getYards() {
 
         return yardsGained;
-
-        /*pass comp % around 60-65%
-        9 ints per 450 attempts
-        
-        Short (5 yards or less): 80.5 percent
-Mid (6-15 yards): 65.0 percent
-Deep (16-25 yards): 52.0 percent
-Bomb (26+ yards): 33.6 percent
-         */
- /*rush stats
-        average 4-5yrds, for inside and outside 2.46-6.92 inside 1.95-7 outside hi/low averages of all rb
-        6-fumbles per 500 runs
-         */
     }
 
     public void fieldGoal() {
@@ -191,5 +180,49 @@ Bomb (26+ yards): 33.6 percent
     public void commentary() {// put this in with getYards?
         System.out.println("\n */* A gain of " + yardsGained + " on the play */*\n");
     }
-
+    
+    public void getview(){
+        System.out.println("   X              X           \n"
+                         + "        X   X       X         \n"
+                         + "     X X X X X X        \n"
+                         + "  O   O 0 0 0 0 O   00       \n"
+                         + "         0               \n"
+                         + "         0                ");
+    }
+    
+    
+    public void playview(){
+        System.out.println("  | 13        11____    |   12     \n"
+                         + "  |                 \\   |        \n"
+                         + "  |            10/---|-/--         \n"
+                         + "  O   O 0 0 0 0 O    00       \n"
+                         + "         0         |         \n"
+                         + "         0________/ 9         ");
+    }
+    
+      public void getruns(){
+        System.out.println(" 4                     |   5                   \n"
+                         + "          |            |              |        \n"
+                         + "          |            |              |          \n"
+                         + " O   O 0 0|0 0 O    00 | O   O 0 0 0 0/O    00  \n"
+                         + "         0|            |         0   /           \n"
+                         + "         0|            |         0  /          \n"
+                         + "         O/            |         O/           \n");
+ 
+        System.out.println("  6                     |   7                   \n"
+                         + "          |             |                   |    \n"
+                         + "          |             |                   |     \n"
+                         + " O   O 0 0| 0 0 O    00 | O   O 0 0 0 0 O   | 00    \n"
+                         + "         0\\             |         0         |     \n"
+                         + "         0 /            |         0        /    \n"
+                         + "         O/             |         O_______/   \n");
+         System.out.println(" 8                   \n"
+                         + "                    \n"
+                         + " OO00|00O0 0    \n"
+                         + "    0|           \n"
+                         + "    0|            \n"
+                         + "    O        ");
+    }
+    
+//4.Inside, 5.Outside, 6.Draw, 7.Toss, 8.Goaline")
 }

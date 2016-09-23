@@ -2,6 +2,8 @@ package text_football;
 
 import java.util.Scanner;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class game {
 
@@ -15,18 +17,24 @@ public class game {
     public int playNum = 0;
     boolean ball = true; //used to see who has the ball.
     public int fieldPos = 20;
+    public int maxplays = 35;
 
     game() {
         this.homeTeam = "Michigan";
         this.awayTeam = "Ohio State";
-        System.out.println("*****\t Ann Arbor Michigan is the site of Todays Game \n We welcome you on a beautiful fall day for football\n Now lets get down on the feild for the Coin Toss");
+        System.out.println("\n\n*****\t Ann Arbor Michigan is the site of Todays Game \n We welcome you on a beautiful fall day for football");
+        pause(1500);
+        System.out.println("\nNow lets get down on the feild for the Coin Toss\n");
+        pause(1500);
     }
 
     game(String homeTeam, String awayTeam) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
-        System.out.println("*****\t Welcome to Todays Game between " + homeTeam + " and " + awayTeam + "!\n We welcome you on a beautiful fall day for football\n Now lets get down on the feild for the KickOff");
-
+        System.out.println("\n\n*****\t Welcome to Todays Game between " + homeTeam + " and " + awayTeam + "!, in what should be an exciting matchup\n");
+         pause(1500);
+        System.out.println("\nNow lets get down on the feild for the KickOff");
+        pause(1500);
     }
 
     public void start() {
@@ -41,25 +49,28 @@ public class game {
         }
         cointoss();
 
-        //***********************      
+        
         while (playNum < 70) { //average game is about 130 plays,
 
             while (ball) {
-                System.out.println("\n" + homeTeam + " has the ball as they get ready to start this drive");
-                Drive d = new Drive(fieldPos);//start new drive
+                System.out.println("---------------------------------------------------"
+                        + "\n" + homeTeam + " has the ball as they get ready to start this drive");
+                Drive d = new Drive(fieldPos, playNum, maxplays);//start new drive
                 d.driveStart(false);
                 fieldPos = d.getFieldPos();
                 this.homeScore += d.getScore();
                 playNum += d.getplayCount();
                 endDrive();
                 printScore();
+                break;
             }
 
             simulate(simulate);
 
             while (!ball) {
-                System.out.println("\n" + awayTeam + " has the ball as they get ready to start this drive");
-                Drive d = new Drive(fieldPos);//start new drive
+                System.out.println("---------------------------------------------------"
+                        + "\n" + awayTeam + " has the ball as they get ready to start this drive");
+                Drive d = new Drive(fieldPos, playNum, maxplays);//start new drive
                 d.driveStart(false);
                 fieldPos = d.getFieldPos();
                 this.awayScore += d.getScore();
@@ -73,7 +84,7 @@ public class game {
 
     public void simulate(boolean answer) {
         if (answer) {
-            Drive d = new Drive(fieldPos);
+            Drive d = new Drive(fieldPos, playNum, maxplays);
             d.driveStart(simulate);//code to simualte d
             this.awayScore += d.getScore();
             playNum += d.getplayCount();
@@ -90,7 +101,9 @@ public class game {
     }
 
     public void printScore() {
-        System.out.println(homeTeam + ": " + homeScore + "\n" + awayTeam + ": " + awayScore);
+        System.out.println("-----------------------");
+        System.out.println("| "+homeTeam + ": " + homeScore + "\t|\n| " + awayTeam + ": " + awayScore +"\t|");
+        System.out.println("-----------------------");
     }
 
     public void cointoss() { // fix this, current if guess is tails will equal a loss no matter what
@@ -99,29 +112,49 @@ public class game {
         boolean coin = rand.nextBoolean();
         String coinGuess = "";
 
-        while (!coinGuess.equals("Heads") && !coinGuess.equals("Tails")) {
+        while (!coinGuess.equalsIgnoreCase("Heads") && !coinGuess.equalsIgnoreCase("Tails")) {
             System.out.println("\t\t" + homeTeam + ", Heads or Tails?");
             coinGuess = scan.next();
         }
+        pause(800);
 
-        if (coinGuess.equals("Heads") && coin) {
-            System.out.println("The coin is Heads.. " + homeTeam + " Has won the toss, \n Would you like to Kick or Recieve?");
+        if ((coinGuess.equalsIgnoreCase("Heads") && coin ) || (coinGuess.equalsIgnoreCase("Tails") && !coin)) {
+           
+            if(coin){
+                System.out.println("The coin is Heads.. " + homeTeam + " Has won the toss, \n Would you like to Kick or Recieve?");
+            }
+            else{
+            System.out.println("The coin is Tails.. " + homeTeam + " Has won the toss, \n Would you like to Kick or Recieve?");
+            }
             if (scan.next().equals("Recieve")) {
                 ball = true;
             } else {
                 ball = false;
             }
-        } else { 
+        } 
+        else { 
             System.out.println("The coin is Tails. " + awayTeam + " Wins the toss, \n Kick or Recieve?");
-            if (scan.next().equals("Recieve")) {
+            boolean KR = rand.nextBoolean();
+            if(KR){
+                System.out.println( awayTeam + " Chooses to Recieve the ball");
                 ball = false;
-            } else {
+            }else {
+                System.out.println( awayTeam + " Chooses to Kick to start the Game");
                 ball = true;
             }
         }
-        System.out.println("They are all lined up ready for the Kickoff. \n"
-                + "The kick is away and it will be downed in the Endzone for a Touchback.\n");
+        pause(1000);
+        System.out.println("They are all lined up ready for the Kickoff.");
+                pause(1500);
+        System.out.println("The kick is away and it will be downed in the Endzone for a Touchback.\n");
 
+    }
+    public void pause(int time){
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(game.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

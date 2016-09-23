@@ -10,10 +10,14 @@ public class Drive {
     int yardsGained = 0;
     int playcount = 0;
     int score;
+    int totalplays;
+    int maxplays;
     boolean ball = true; // used to tell who has the ball
 
-    Drive(int fieldPos) {
-        this.fieldPos = fieldPos;
+    Drive(int fieldPos, int playnum, int maxplays) {
+        this.fieldPos = fieldPos; 
+        this.totalplays = playnum;
+        this.maxplays = maxplays;
     }
 
     public void driveStart(boolean simulate) {
@@ -28,32 +32,13 @@ public class Drive {
         pause(1500);
 
         if (!simulate) {
-            while (ball) {
+            while (ball &&(maxplays>totalplays)) {
 
                 Play p = new Play();
                 status();
                 p.selectPlay();
                 playcount++;
-                if (p.getfieldGoal()) {
-                    pause(2000);
-                    boolean good = fieldGoalKick();
-                    if (!good) {
-                        System.out.println("*** The Kick is away, aaaand he missed it. just wide on that one***\n");
-                    }
-                    break;
-                }
-                yardsGained = p.getYards();
-                pause(2000);
-                p.commentary();
-                updateDrive();
-                checkDown();
-            }
-        } else {
-            while (ball) {
-                status();
-                Play p = new Play(down, fieldPos);
-                pause(2000);
-                playcount++;
+                totalplays++;
                 yardsGained = p.getYards();
                 updateDrive();
                 if (p.getfieldGoal()) {
@@ -66,9 +51,47 @@ public class Drive {
                 }
                 if (p.getPunt()) {
                     ball = !ball;
+                    fieldPos = (100 - fieldPos);
+                    if(fieldPos < 0){
+                        System.out.println("\n*** Touchback ***\n");
+                        fieldPos = 20;
+                    }
                     break;
                 }
+                pause(2000);
+                p.commentary();
                 checkDown();
+            }
+        } else {
+            while (ball&&(maxplays>totalplays)) {
+                status();
+                Play p = new Play(down, fieldPos);
+                pause(2000);
+                p.commentary();
+                playcount++;
+                totalplays++;
+                yardsGained = p.getYards();
+                updateDrive();
+                if (p.getfieldGoal()) {
+                    pause(2000);
+                    boolean good = fieldGoalKick();
+                    if (!good) {fieldPos = (100 - fieldPos);
+                        System.out.println(" aaaand he missed it. just wide on that one\n\n");
+                    }
+                    break;
+                }
+                if (p.getPunt()) {
+                    ball = !ball;
+                    fieldPos = (100 - fieldPos);
+                    if(fieldPos < 0){
+                        System.out.println("\n*** Touchback ***\n");
+                        fieldPos = 20;
+                    }
+                    break;
+                }
+                pause(2000);
+                checkDown();
+                
             }
         }
 
@@ -91,7 +114,9 @@ public class Drive {
         Random rand = new Random();
         ball = !ball;
         int wind = rand.nextInt(99) + 1;
-        System.out.println("\n*** And the Feild Goal unit looks ready. Here's the snap. ***");
+        System.out.println("\n*** And the Feild Goal unit looks ready. Here's the snap.");
+        pause(2000);
+        System.out.println("The Kick is up");
         pause(2000);
         if (fieldPos <= 60 && wind > 20) {
             return !kickisGood;//57  20%
@@ -104,7 +129,7 @@ public class Drive {
         } else if (fieldPos <= 85 && wind > 90) {
             return !kickisGood;//33  90%
         }
-        System.out.println("*** The Kick is up, It has the distance, And it is Good!! ***\n");
+        System.out.println("It has the distance, And it is Good!!\n");
         score += 3;
         fieldPos = 20;
         return kickisGood;
@@ -137,7 +162,7 @@ public class Drive {
             System.out.println("\t*** First Down! ***");
             pause(2000);
         } else if (down >= 4) {
-            System.out.println("****************\n Turnover on Downs!\n****************");
+            System.out.println("******\n Turnover!\n*******");
             pause(2000);
             fieldPos = (100 - fieldPos);
             down = 1;
@@ -155,7 +180,7 @@ public class Drive {
     }
 
     public void status() {
-        System.out.println("Total plays this drive: " + playcount);
+        //System.out.println("Total plays this drive: " + playcount);
         int passMid;
         if (fieldPos > 50) {
             passMid = 100 - fieldPos;
@@ -167,10 +192,3 @@ public class Drive {
     }
 
 }
-
-/*
-
-|- - - - - - - - - -|
-|  x                |
-|- - - - - - - - - -|
- */
